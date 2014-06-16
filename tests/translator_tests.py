@@ -7,3 +7,9 @@ class TranslatorTest(TestCase):
         Translator({
             "some_field": "some_other_field"
         })
+
+    def test_disallows_non_string_to_field(self):
+        with self.assertRaises(Exception):
+            Translator({
+                "some_field": {"a": "dict"}
+            })
