@@ -1,0 +1,8 @@
+.DS_Store
+*.pyc
+build*.egg-info
+*.egg
+Mongothon.egg-info
+build
+dist
+env
