@@ -63,10 +63,10 @@ class Translator(object):
         #  - check that we don't map a given path both as a lead and branch
 
 
-    def forward(self, start):
+    def apply(self, source):
         """
         Executes the dictionary translation encapsulated by this object on
-        the given `start` dict in the "forward" direction.
+        the given `source` dict in the "forward" direction.
 
         In practice this means a new dict is returned containing the values
         from the start dict of the keys on the left side of the Translator's
@@ -75,24 +75,8 @@ class Translator(object):
         """
         end = {}
         for from_path, to_path in self.spec.iteritems():
-            found, value = get_value_at_path(start, from_path)
+            found, value = get_value_at_path(source, from_path)
             if found:
                 set_value_at_path(end, to_path, value)
         return end
 
-    def backward(self, end):
-        """
-        Executes the dictionary translation encapsulated by this object on
-        the given `start` dict in the "backward" direction.
-
-        In practice this means a new dict is returned containing the values
-        from the end dict of the keys on the right side of the Translator's
-        given spec mapped to the key paths indicated on the left side of
-        the spec.
-        """
-        start = {}
-        for from_path, to_path in self.spec.iteritems():
-            found, value = get_value_at_path(end, to_path)
-            if found:
-                set_value_at_path(start, from_path, value)
-        return start

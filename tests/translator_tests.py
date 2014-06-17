@@ -74,22 +74,7 @@ class TranslatorTest(TestCase):
             'g.h.i': 'j.k'
         })
 
-    def test_backward(self):
-        end = {
-            'a': 1,
-            'c': 2,
-            'e': {'f': 3},
-            'j': {'k': 4}
-        }
-        expected = {
-            'a': 1,
-            'b': 2,
-            'd': 3,
-            'g': {'h': {'i': 4}}
-        }
-        self.assertEqual(expected, self.translator.backward(end))
-
-    def test_forward(self):
+    def test_apply(self):
         start = {
             'a': 1,
             'b': 2,
@@ -102,10 +87,10 @@ class TranslatorTest(TestCase):
             'e': {'f': 3},
             'j': {'k': 4}
         }
-        self.assertEqual(expected, self.translator.forward(start))
+        self.assertEqual(expected, self.translator.apply(start))
 
 
-    def test_forward_with_missing_start_fields(self):
+    def test_apply_with_missing_start_fields(self):
         start = {
             'a': 1,
             'd': 3,
@@ -116,9 +101,9 @@ class TranslatorTest(TestCase):
             'e': {'f': 3},
             'j': {'k': 4}
         }
-        self.assertEqual(expected, self.translator.forward(start))
+        self.assertEqual(expected, self.translator.apply(start))
 
-    def test_forward_with_incorrectly_typed_branch_nodes(self):
+    def test_apply_with_incorrectly_typed_branch_nodes(self):
         start = {
             'a': 1,
             'b': 2,
@@ -130,5 +115,5 @@ class TranslatorTest(TestCase):
             'c': 2,
             'e': {'f': 3}
         }
-        self.assertEqual(expected, self.translator.forward(start))
+        self.assertEqual(expected, self.translator.apply(start))
 
