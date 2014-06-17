@@ -75,18 +75,19 @@ def decorate_spec(spec):
 
 
 
-class Translator(object):
-    def __init__(self, spec):
-        validate_spec(spec)
-        self.spec = decorate_spec(spec)
 
+def translator(spec):
+    validate_spec(spec)
+    spec = decorate_spec(spec)
 
-    def apply(self, source):
+    def impl(source):
         """
         Executes the dictionary translation encapsulated by this object on
         the given `source` dict.
         """
         end = {}
-        for dest_path, source_fn in self.spec.iteritems():
+        for dest_path, source_fn in spec.iteritems():
             set_value_at_path(end, dest_path, source_fn(source))
         return end
+
+    return impl

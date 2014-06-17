@@ -1,17 +1,17 @@
 from unittest import TestCase
-from missandei.translator import Translator, get_value_at_path, set_value_at_path
+from missandei.translator import translator, get_value_at_path, set_value_at_path
 
 
 class TranslatorValidationTest(TestCase):
     def test_valid_spec(self):
-        Translator({
+        translator({
             "some_field": "some_other_field",
             "dynamic_field": lambda d: d['stuff'].lower()
         })
 
     def test_disallows_non_string_to_field(self):
         with self.assertRaises(Exception):
-            Translator({
+            translator({
                 "some_field": {"a": "dict"}
             })
 
@@ -62,7 +62,7 @@ class TestSetValueAtPath(TestCase):
 
 class TranslatorTest(TestCase):
     def setUp(self):
-        self.translator = Translator({
+        self.translator = translator({
             'a': 'a',
             'c': 'b',
             'e.f': 'd',
@@ -85,7 +85,7 @@ class TranslatorTest(TestCase):
             'j': {'k': 4},
             'l': {'m': 'p'}
         }
-        self.assertEqual(expected, self.translator.apply(start))
+        self.assertEqual(expected, self.translator(start))
 
 
     def test_apply_with_missing_start_fields(self):
@@ -101,7 +101,7 @@ class TranslatorTest(TestCase):
             'j': {'k': 4},
             'l': {'m': 'o'}
         }
-        self.assertEqual(expected, self.translator.apply(start))
+        self.assertEqual(expected, self.translator(start))
 
     def test_apply_with_incorrectly_typed_branch_nodes(self):
         start = {
@@ -117,5 +117,5 @@ class TranslatorTest(TestCase):
             'j': {'k': None},
             'l': {'m': 'o'}
         }
-        self.assertEqual(expected, self.translator.apply(start))
+        self.assertEqual(expected, self.translator(start))
 
