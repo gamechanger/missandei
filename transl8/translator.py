@@ -24,11 +24,6 @@ def set_value_at_path(obj, path, value):
     else:
         obj[path[0]] = value
 
-def translate(from_path, to_path, from_source, to_dest):
-    found, value = get_value_at_path(from_source, from_path)
-    if found:
-        set_value_at_path(to_dest, to_path, value)
-
 
 class Translator(object):
     def __init__(self, spec):
@@ -51,11 +46,15 @@ class Translator(object):
     def forward(self, start):
         end = {}
         for from_path, to_path in self.spec.iteritems():
-            translate(from_path, to_path, start, end)
+            found, value = get_value_at_path(start, from_path)
+            if found:
+                set_value_at_path(end, to_path, value)
         return end
 
     def backward(self, end):
         start = {}
         for from_path, to_path in self.spec.iteritems():
-            translate(to_path, from_path, end, start)
+            found, value = get_value_at_path(end, to_path)
+            if found:
+                set_value_at_path(start, from_path, value)
         return start
