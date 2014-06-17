@@ -52,8 +52,12 @@ def validate_spec(spec):
     the Translator class.
     """
     for from_path, to_path in spec.iteritems():
-        if not isinstance(to_path, basestring):
-            raise TranslatorFormatException()
+        if isinstance(to_path, basestring):
+            continue
+        elif callable(to_path):
+            continue
+
+        raise TranslatorFormatException()
 
 
 def decorate_spec(spec):

@@ -5,7 +5,8 @@ from missandei.translator import Translator, get_value_at_path, set_value_at_pat
 class TranslatorValidationTest(TestCase):
     def test_valid_spec(self):
         Translator({
-            "some_field": "some_other_field"
+            "some_field": "some_other_field",
+            "dynamic_field": lambda d: d['stuff'].lower()
         })
 
     def test_disallows_non_string_to_field(self):
@@ -65,7 +66,8 @@ class TranslatorTest(TestCase):
             'a': 'a',
             'c': 'b',
             'e.f': 'd',
-            'j.k': 'g.h.i'
+            'j.k': 'g.h.i',
+            'l.m': lambda obj: obj.get('n', 'o')
         })
 
     def test_apply(self):
@@ -73,13 +75,15 @@ class TranslatorTest(TestCase):
             'a': 1,
             'b': 2,
             'd': 3,
-            'g': {'h': {'i': 4}}
+            'g': {'h': {'i': 4}},
+            'n': 'p'
         }
         expected = {
             'a': 1,
             'c': 2,
             'e': {'f': 3},
-            'j': {'k': 4}
+            'j': {'k': 4},
+            'l': {'m': 'p'}
         }
         self.assertEqual(expected, self.translator.apply(start))
 
@@ -94,7 +98,8 @@ class TranslatorTest(TestCase):
             'a': 1,
             'c': None,
             'e': {'f': 3},
-            'j': {'k': 4}
+            'j': {'k': 4},
+            'l': {'m': 'o'}
         }
         self.assertEqual(expected, self.translator.apply(start))
 
@@ -109,7 +114,8 @@ class TranslatorTest(TestCase):
             'a': 1,
             'c': 2,
             'e': {'f': 3},
-            'j': {'k': None}
+            'j': {'k': None},
+            'l': {'m': 'o'}
         }
         self.assertEqual(expected, self.translator.apply(start))
 
