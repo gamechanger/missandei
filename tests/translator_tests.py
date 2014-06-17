@@ -69,9 +69,9 @@ class TranslatorTest(TestCase):
     def setUp(self):
         self.translator = Translator({
             'a': 'a',
-            'b': 'c',
-            'd': 'e.f',
-            'g.h.i': 'j.k'
+            'c': 'b',
+            'e.f': 'd',
+            'j.k': 'g.h.i'
         })
 
     def test_apply(self):

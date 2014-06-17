@@ -66,17 +66,12 @@ class Translator(object):
     def apply(self, source):
         """
         Executes the dictionary translation encapsulated by this object on
-        the given `source` dict in the "forward" direction.
-
-        In practice this means a new dict is returned containing the values
-        from the start dict of the keys on the left side of the Translator's
-        given spec mapped to the key paths indicated on the right side of
-        the spec.
+        the given `source` dict.
         """
         end = {}
-        for from_path, to_path in self.spec.iteritems():
-            found, value = get_value_at_path(source, from_path)
+        for dest_path, source_path in self.spec.iteritems():
+            found, value = get_value_at_path(source, source_path)
             if found:
-                set_value_at_path(end, to_path, value)
+                set_value_at_path(end, dest_path, value)
         return end
 
