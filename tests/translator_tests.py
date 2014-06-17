@@ -17,33 +17,27 @@ class TranslatorValidationTest(TestCase):
 
 class TestGetValueAtPath(TestCase):
     def test_value_at_root(self):
-        found, value = get_value_at_path({'a': 1}, 'a')
-        self.assertTrue(found)
+        value = get_value_at_path('a', {'a': 1})
         self.assertEqual(value, 1)
 
     def test_value_at_root_missing(self):
-        found, value = get_value_at_path({'a': 1}, 'b')
-        self.assertFalse(found)
+        value = get_value_at_path('b', {'a': 1})
         self.assertEqual(value, None)
 
     def test_value_at_leaf(self):
-        found, value = get_value_at_path({'a': {'b': {'c': 2}}}, 'a.b.c')
-        self.assertTrue(found)
+        value = get_value_at_path('a.b.c', {'a': {'b': {'c': 2}}})
         self.assertEqual(value, 2)
 
     def test_value_at_leaf_missing(self):
-        found, value = get_value_at_path({'a': {'b': {'d': 2}}}, 'a.b.c')
-        self.assertFalse(found)
+        value = get_value_at_path('a.b.c', {'a': {'b': {'d': 2}}})
         self.assertEqual(value, None)
 
     def test_branch_missing(self):
-        found, value = get_value_at_path({'a': {'d': {'c': 2}}}, 'a.b.c')
-        self.assertFalse(found)
+        value = get_value_at_path('a.b.c', {'a': {'d': {'c': 2}}})
         self.assertEqual(value, None)
 
     def test_expected_branch_is_not_a_branch(self):
-        found, value = get_value_at_path({'a': {'b': 'a string'}}, 'a.b.c')
-        self.assertFalse(found)
+        value = get_value_at_path('a.b.c', {'a': {'b': 'a string'}})
         self.assertEqual(value, None)
 
 
@@ -98,6 +92,7 @@ class TranslatorTest(TestCase):
         }
         expected = {
             'a': 1,
+            'c': None,
             'e': {'f': 3},
             'j': {'k': 4}
         }
@@ -113,7 +108,8 @@ class TranslatorTest(TestCase):
         expected = {
             'a': 1,
             'c': 2,
-            'e': {'f': 3}
+            'e': {'f': 3},
+            'j': {'k': None}
         }
         self.assertEqual(expected, self.translator.apply(start))
 

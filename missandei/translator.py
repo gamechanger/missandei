@@ -1,10 +1,12 @@
+from functools import partial
+
 
 class TranslatorFormatException(Exception):
     """Exception raised when a given translation spec is not in a valid format."""
     pass
 
 
-def get_value_at_path(obj, path):
+def get_value_at_path(path, obj):
     """
     Attempts to get the value of a field located at the given field path within the
     object. Recurses into child dicts as necessary. Very permissive - if the branch
@@ -24,11 +26,10 @@ def get_value_at_path(obj, path):
     if path[0] in obj:
         if len(path) > 1:
             if not isinstance(obj[path[0]], dict):
-                return False, None
-            return get_value_at_path(obj[path[0]], path[1:])
-        return True, obj[path[0]]
+                return
+            return get_value_at_path(path[1:], obj[path[0]])
+        return obj[path[0]]
 
-    return False, None
 
 def set_value_at_path(obj, path, value):
     """
@@ -45,22 +46,35 @@ def set_value_at_path(obj, path, value):
         obj[path[0]] = value
 
 
+def validate_spec(spec):
+    """
+    Checks that the given spec is a valid spec that can be used by
+    the Translator class.
+    """
+    for from_path, to_path in spec.iteritems():
+        if not isinstance(to_path, basestring):
+            raise TranslatorFormatException()
+
+
+def decorate_spec(spec):
+    """
+    Returns a copy of the given spec with simple key-based lookups replaced
+    which functions which will actually implement those lookups.
+    """
+    decorated = {}
+    for dest_path, source_path in spec.iteritems():
+        if isinstance(source_path, basestring):
+            decorated[dest_path] = partial(get_value_at_path, source_path)
+        elif callable(source_path):
+            decorated[dest_path] = source_path
+    return decorated
+
+
+
 class Translator(object):
     def __init__(self, spec):
-        self.validate(spec)
-        self.spec = spec
-
-    def validate(self, spec):
-        """
-        Checks that the given spec is a valid spec that can be used by
-        the Translator class.
-        """
-        for from_path, to_path in spec.iteritems():
-            if not isinstance(to_path, basestring):
-                raise TranslatorFormatException()
-
-        # TODO:
-        #  - check that we don't map a given path both as a lead and branch
+        validate_spec(spec)
+        self.spec = decorate_spec(spec)
 
 
     def apply(self, source):
@@ -69,9 +83,6 @@ class Translator(object):
         the given `source` dict.
         """
         end = {}
-        for dest_path, source_path in self.spec.iteritems():
-            found, value = get_value_at_path(source, source_path)
-            if found:
-                set_value_at_path(end, dest_path, value)
+        for dest_path, source_fn in self.spec.iteritems():
+            set_value_at_path(end, dest_path, source_fn(source))
         return end
-
