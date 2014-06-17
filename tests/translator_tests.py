@@ -1,5 +1,5 @@
 from unittest import TestCase
-from transl8.translator import Translator, get_value_at_path, set_value_at_path
+from missandei.translator import Translator, get_value_at_path, set_value_at_path
 
 
 class TranslatorValidationTest(TestCase):
