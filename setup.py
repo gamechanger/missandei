@@ -7,7 +7,7 @@ setuptools.setup(
     author="Tom Leach",
     author_email="tom@gc.io",
     description="A dict to dict translation framework",
-    license="BSD",
+    license="MIT",
     keywords="dict transformation translation",
     url="http://github.com/gamechanger/missandei",
     packages=["missandei"],
