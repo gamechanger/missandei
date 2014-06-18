@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name="missandei",
-    version="0.1.0",
+    version="0.2.0",
     author="Tom Leach",
     author_email="tom@gc.io",
     description="A dict to dict translation framework",
