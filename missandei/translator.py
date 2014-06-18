@@ -49,7 +49,7 @@ def set_value_at_path(obj, path, value):
 def validate_spec(spec):
     """
     Checks that the given spec is a valid spec that can be used by
-    the Translator class.
+    the translator function.
     """
     for from_path, to_path in spec.iteritems():
         if isinstance(to_path, basestring):
@@ -82,7 +82,7 @@ def translator(spec):
 
     def impl(source):
         """
-        Executes the dictionary translation encapsulated by this object on
+        Executes the dictionary translation encapsulated by this function on
         the given `source` dict.
         """
         end = {}
